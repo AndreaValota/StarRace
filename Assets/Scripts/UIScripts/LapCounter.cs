@@ -1,0 +1,44 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+
+public class LapCounter : MonoBehaviour
+{
+    [SerializeField] TextMeshProUGUI LapCount;
+
+    private int _lap=1;
+    public bool allCheckDone = false;
+
+    public int Lap
+    {
+        get { return _lap; }
+        set { 
+            _lap = value;
+            LapCount.text = _lap.ToString()+"/3";
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && allCheckDone)
+        {
+            Lap++;
+            //gameObject.SetActive(false);
+            allCheckDone = false;
+        }
+
+        if (other.CompareTag("AICar"))
+        {
+            other.GetComponent<DelegatedSteering>().lap++;
+        }
+
+        if (Lap == 4)
+        {
+            SceneManager.LoadScene(0);
+        }
+            
+    }
+
+}
