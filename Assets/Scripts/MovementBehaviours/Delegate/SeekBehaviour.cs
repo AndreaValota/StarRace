@@ -9,22 +9,17 @@ public class SeekBehaviour : MovementBehaviour {
 	public float brakeAtAngle = 20f;
 	public float stopAt = 0.01f;
 
-	public int rLower = 0;
-	public int rUpper = 11;
-
-    private void Start()
-    {
-		int r = Random.Range(rLower, rUpper);
-		gas = gas + r;
-		Debug.Log(gameObject.name + " has gas = "+gas);
-	}
-
-    public override Vector3 GetAcceleration (MovementStatus status, Vector3 destination) {
+	private Vector3 ac;
+	
+	public override Vector3 GetAcceleration (MovementStatus status, Vector3 destination) {
 
 		if (destination != null) {
 			//Vertical adjustment
-			Vector3 verticalAdj = new Vector3 (destination.x, transform.position.y, destination.z);
+			Vector3 verticalAdj = new Vector3 (destination.x, destination.y, destination.z);
 			Vector3 toDestination = (verticalAdj - transform.position);
+
+			verticalAdj = new Vector3(destination.x, transform.position.y, destination.z);
+			Vector3 toDestinationVA = (verticalAdj - transform.position);
 
 			if (toDestination.magnitude > stopAt)
 			{
@@ -34,6 +29,7 @@ public class SeekBehaviour : MovementBehaviour {
 				//If the destination is at BreakAngle degree from the movement direction it means we are doing a sharp turn and we need to break
 				bool brakeCheck = (Vector3.Angle(status.movementDirection, toDestination) < brakeAtAngle);
 
+				ac = tangentComponent * (brakeCheck ? gas : -brake) +(normalComponent * steer);
 				return (tangentComponent * (brakeCheck ? gas : -brake)) + (normalComponent * steer);
 			}
 			else {
@@ -45,4 +41,10 @@ public class SeekBehaviour : MovementBehaviour {
 		}
 	}
 
+
+	public void OnDrawGizmos()
+	{
+		//Draws the destination as a circle 
+		UnityEditor.Handles.DrawLine(transform.position, transform.position+ac);
+	}
 }

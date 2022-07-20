@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 [RequireComponent (typeof (Rigidbody))]
@@ -8,7 +9,9 @@ public class DelegatedSteering : MonoBehaviour {
 	public float minLinearSpeed = 5f;
 	public float maxLinearSpeed = 40f;
 	public float maxAngularSpeed = 100f;
-	
+	public int rLower = 0;
+	public int rUpper = 11;
+
 	[HideInInspector]
 	public Vector3 lastPos;
 	[HideInInspector]
@@ -18,18 +21,34 @@ public class DelegatedSteering : MonoBehaviour {
 
 	private MovementStatus status;
 
+	private Rigidbody rb;
+
 	private void Start () {
 		status = new MovementStatus ();
-		int i = Random.Range(0, 3);
+
+		int scene = SceneManager.GetActiveScene().buildIndex;
+		int i = 0;
+		if (scene == 2)
+		{
+			//i = Random.Range(0, 2);
+			i = 1;
+			//Debug.Log("range");
+		}
+        else
+        {
+			i = Random.Range(0, 3);
+        }
+
+
 		if (i == 0)
 		{
-			GetComponent<ChaseTheRabbit>().predictionOffset = 5;
 			pathStrategy = GetComponent<ChaseTheRabbit>();
 			Debug.Log(gameObject.name + " choose Chase the rabbit");
         }
         else if(i==1)
         {
 			pathStrategy = GetComponent<PredictivePathFollowing>();
+			maxAngularSpeed = 0;
 			Debug.Log(gameObject.name + " choose PPF");
         }
         else
@@ -38,20 +57,27 @@ public class DelegatedSteering : MonoBehaviour {
 			pathStrategy = GetComponent<ChaseTheRabbit>();
 			Debug.Log(gameObject.name + " choose Chase the rabbit (follow path strictly)");
 		}
+
+		rb = GetComponent<Rigidbody>();
+
+		int r = Random.Range(rLower, rUpper);
+		maxLinearSpeed = maxLinearSpeed + r;
+		Debug.Log(gameObject.name + " has gas = " + maxLinearSpeed);
 	}
 
 	void FixedUpdate () {
 
 		RaycastHit hit;
-		if (Physics.Raycast(GetComponent<Rigidbody>().position, -transform.up, out hit))
+		if (Physics.Raycast(rb.position, -transform.up, out hit) && hit.transform.tag != "IgnoreSurface")
 		{
-			GetComponent<Rigidbody>().useGravity = false;
-			GetComponent<Rigidbody>().MovePosition(new Vector3(GetComponent<Rigidbody>().position.x, hit.point.y + 1, GetComponent<Rigidbody>().position.z));
+			rb.useGravity = false;
+			rb.MovePosition(hit.point + hit.normal); 
+			rb.MoveRotation(Quaternion.FromToRotation(rb.transform.up, hit.normal) * rb.rotation);
 			lastPos = hit.point;
         }
         else
         {
-			GetComponent<Rigidbody>().useGravity = true;
+			rb.useGravity = true;
 		}
 
 		status.movementDirection = transform.forward;
@@ -74,10 +100,10 @@ public class DelegatedSteering : MonoBehaviour {
 		}
 	}
 
-	/*private void OnDrawGizmos () {
+	private void OnDrawGizmos () {
 		if (status != null) {
 			UnityEditor.Handles.Label (transform.position + 2f * transform.up, status.linearSpeed.ToString () + "\n" + status.angularSpeed.ToString());
 		}
-	}*/
+	}
 
 }

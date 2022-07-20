@@ -60,7 +60,7 @@ public class Respawn : MonoBehaviour
         {
             other.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
             other.gameObject.GetComponent<Rigidbody>().MovePosition(new Vector3(resPoint.x, resPoint.y + 1, resPoint.z));
-            other.gameObject.GetComponent<Rigidbody>().MoveRotation(Quaternion.LookRotation((points[(minIndex + 1) % points.Length] - resPoint).normalized, other.gameObject.GetComponent<Rigidbody>().transform.up));
+            other.gameObject.GetComponent<Rigidbody>().MoveRotation(Quaternion.LookRotation((points[(minIndex + 1) % points.Length] - resPoint).normalized, Vector3.up));
         }
 
     }

@@ -18,10 +18,11 @@ public class MoveMe : MonoBehaviour
     private void FixedUpdate()
     {
         RaycastHit hit;
-        if (Physics.Raycast(PlayerBody.position, -transform.up, out hit))
+        if (Physics.Raycast(PlayerBody.position, -PlayerBody.transform.up, out hit) && hit.transform.tag != "IgnoreSurface")
         {
             PlayerBody.useGravity = false;
-            PlayerBody.MovePosition(new Vector3(GetComponent<Rigidbody>().position.x, hit.point.y + 1, GetComponent<Rigidbody>().position.z));
+            PlayerBody.MovePosition(hit.point + hit.normal); //GetComponent<Rigidbody>().position
+            PlayerBody.MoveRotation(Quaternion.FromToRotation(PlayerBody.transform.up, hit.normal) * PlayerBody.rotation);
             lastPos = hit.point;
         }
         else
@@ -50,8 +51,10 @@ public class MoveMe : MonoBehaviour
     private void MovePlayer()
     {
         Vector3 MoveVector = transform.TransformDirection(PlayerMovementInput) * Speed;
-        PlayerBody.velocity = new Vector3(MoveVector.x, PlayerBody.velocity.y, MoveVector.z);
-
+        if(PlayerBody.useGravity == true )
+            PlayerBody.velocity = new Vector3(MoveVector.x, PlayerBody.velocity.y, MoveVector.z);
+        else
+            PlayerBody.velocity = new Vector3(MoveVector.x, MoveVector.y, MoveVector.z);
     }
 
     private void MovePlayerCamera()
