@@ -42,9 +42,9 @@ public class SeekBehaviour : MovementBehaviour {
 	}
 
 
-	public void OnDrawGizmos()
+	/*public void OnDrawGizmos()
 	{
 		//Draws the destination as a circle 
 		UnityEditor.Handles.DrawLine(transform.position, transform.position+ac);
-	}
+	}*/
 }

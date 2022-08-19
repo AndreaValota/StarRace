@@ -36,7 +36,15 @@ public class LapCounter : MonoBehaviour
 
         if (Lap == 4)
         {
-            SceneManager.LoadScene(0);
+
+            //EndRace endScript = GameObject.Find("SetTextScript").GetComponent<EndRace>();
+            EndRace.SetPos(GameObject.Find("PositionCount").GetComponent<TextMeshProUGUI>().text);
+
+
+            SceneManager.LoadScene(4);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
             
     }

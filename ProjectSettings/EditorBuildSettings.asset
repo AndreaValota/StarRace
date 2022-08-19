@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Track3.unity
     guid: d7c193677cdc8f143a11d03bcd27fff9
+  - enabled: 1
+    path: Assets/Scenes/EndRace.unity
+    guid: e8db04102ec87c44db7441fe1f99ff66
   m_configObjects: {}
