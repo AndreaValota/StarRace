@@ -16,6 +16,14 @@ public class DelegatedSteering : MonoBehaviour {
 	public Vector3 lastPos;
 	[HideInInspector]
 	public int lap = 0;
+	[HideInInspector]
+	public static bool CTR = false;
+	[HideInInspector]
+	public static bool PPF = false;
+	[HideInInspector]
+	public static bool CTRStrict = false;
+	[HideInInspector]
+	public static bool[] possibleStrats = { true, true, true };
 
 	private PathFollowing pathStrategy = null;
 
@@ -40,23 +48,50 @@ public class DelegatedSteering : MonoBehaviour {
         }
         else{
 			i = Random.Range(0, 3);
+			if (CTR)
+            {
+				possibleStrats[0] = false;
+            }
+			if (PPF)
+            {
+				possibleStrats[1] = false;
+			}
+			if (CTRStrict)
+            {
+				possibleStrats[2] = false;
+			}
+
+
+			if (CTR || PPF || CTRStrict)
+			{
+				for (i = 0; i < possibleStrats.Length; i++)
+				{
+					if (possibleStrats[i])
+					{
+						break;
+					}
+				}
+			}
         }
 
 
 		if (i == 0)
 		{
 			pathStrategy = GetComponent<ChaseTheRabbit>();
+			CTR = true;
 			Debug.Log(gameObject.name + " choose Chase the rabbit");
         }
         else if(i==1)
         {
 			pathStrategy = GetComponent<PredictivePathFollowing>();
+			PPF = true;
 			maxAngularSpeed = 0;
 			Debug.Log(gameObject.name + " choose PPF");
         }
         else
         {
 			GetComponent<ChaseTheRabbit>().predictionOffset = 1;
+			CTRStrict = true;
 			pathStrategy = GetComponent<ChaseTheRabbit>();
 			Debug.Log(gameObject.name + " choose Chase the rabbit (follow path strictly)");
 		}

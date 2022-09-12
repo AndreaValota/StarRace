@@ -63,6 +63,7 @@ public class PositionCounter : MonoBehaviour
         #region Car01UI
         int pos = 0;
         int i = 4;
+        int k = 1;
         if (Car01Dist == First)
         {
             pos = 1;
@@ -98,8 +99,23 @@ public class PositionCounter : MonoBehaviour
             i--;
         }
 
+        if (GameObject.Find("FinishLineLapTrigger").GetComponent<LapCounter>().Lap < Car02.GetComponent<DelegatedSteering>().lap)
+        {
+            k++;
+        }
+        if (GameObject.Find("FinishLineLapTrigger").GetComponent<LapCounter>().Lap < Car03.GetComponent<DelegatedSteering>().lap)
+        {
+            k++;
+        }
+        if (GameObject.Find("FinishLineLapTrigger").GetComponent<LapCounter>().Lap < Car04.GetComponent<DelegatedSteering>().lap)
+        {
+            k++;
+        }
+
         //Debug.Log("i = " + i);
         if (i < pos) pos = i;
+
+        if (k > pos) pos = k;
 
         Car01Text.text = pos+"/4";
         #endregion

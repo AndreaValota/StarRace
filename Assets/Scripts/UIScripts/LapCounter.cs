@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class LapCounter : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI LapCount;
+    [SerializeField] Animator fadeOut;
+    [SerializeField] Animator audioFadeOut;
 
     private int _lap=1;
     public bool allCheckDone = false;
@@ -40,11 +43,11 @@ public class LapCounter : MonoBehaviour
             //EndRace endScript = GameObject.Find("SetTextScript").GetComponent<EndRace>();
             EndRace.SetPos(GameObject.Find("PositionCount").GetComponent<TextMeshProUGUI>().text);
 
+            fadeOut.SetTrigger("FadeOut");
+            audioFadeOut.SetTrigger("FadeOut");
 
-            SceneManager.LoadScene(4);
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            /*Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;*/
         }
             
     }
