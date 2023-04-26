@@ -1,9 +1,4 @@
-﻿// Making Bezier Surface Code
-//if you have any questions please let me know.
-//s.Mohammad Moulaeifard
-//Mohammad.Moulaeifard@cgre.rwth-aachen.de
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
